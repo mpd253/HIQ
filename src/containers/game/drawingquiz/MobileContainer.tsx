@@ -19,7 +19,7 @@ export default function MobileContainer() {
     handleInputChange,
     handleSendMessage,
     handleKeyDown,
-  } = useGameChat(users[0]?.name); // 임시
+  } = useGameChat(users[0]?.name);
 
   return (
     <div
