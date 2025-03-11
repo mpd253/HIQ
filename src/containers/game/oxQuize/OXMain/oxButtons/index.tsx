@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import OImg from "@/assets/images/O-img.png";
-import XImg from "@/assets/images/X-img.svg";
+import OImg from "../../../../../../public/assets/images/O-img.png";
+import XImg from "../../../../../../public/assets/images/X-img.png";
 import { sendMessage } from "../../../../../service/api/socketConnection";
 
 import { useEffect } from "react";

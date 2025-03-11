@@ -1,6 +1,6 @@
 import Image from "next/image";
-import lock from "@/assets/icons/rock.png";
-import unlock from "@/assets/images/public.png";
+import lock from "../../../../public/assets/icons/rock.png";
+import unlock from "../../../../public/assets/images/public.png";
 import CloseButton from "../../../components/CloseButton/CloseButton";
 import { roomInfoData } from "../../../types/Room";
 import { useIsRoomStore } from "../../../store/roomStore";

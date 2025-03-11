@@ -5,7 +5,7 @@ import Image from "next/image";
 import ItemCard from "../../../components/ItemCard/ItemCard";
 import { Item } from "../../../types/item";
 
-import searchIcon from "@/assets/images/search.png";
+import searchIcon from "../../../../public/assets/images/search.png";
 
 interface ItemTabProps {
   data: { [key: string]: Item[] };
