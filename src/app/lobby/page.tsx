@@ -23,10 +23,10 @@ interface Room {
   round: number;
   hostId: number;
   disclosure: boolean;
-  gameType: "SPEED" | "CATCHMIND" | "OX";
+  gameType: "SPEED" | "OX";
   time?: number;
   maxUsers?: number;
-  currentUsers?: number;
+  currentPlayer?: number;
 }
 
 // 메시지 인터페이스 정의

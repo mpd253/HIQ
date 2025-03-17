@@ -8,9 +8,17 @@ import UserCard from "./UserCard";
 import DeportModal from "../../roomsModal/DeportModal";
 import MenuModal from "../../roomsModal/MenuModal";
 import ProfileModal from "../../roomsModal/ProfileModal";
-import { roomUserList, roomUserListData } from "../../../../types/Room";
+import {
+  playerData,
+  roomPlayList,
+  roomPlayListData,
+  roomUserList,
+  roomUserListData,
+} from "../../../../types/Room";
 
 export default function UserList({ userList }: { userList: roomUserListData }) {
+  console.log("userList", userList);
+
   const { setIsHost, isHost, setAsAllReady } = useIsRoomStore();
   const storedUserId = sessionStorage.getItem("userId");
 
@@ -74,6 +82,7 @@ export default function UserList({ userList }: { userList: roomUserListData }) {
           key={index}
         >
           <UserCard
+            playList={userList}
             nickName={i.username}
             isReady={i.isReady}
             host={Number(i.userId) === Number(userList?.data.hostId)}

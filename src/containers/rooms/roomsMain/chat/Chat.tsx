@@ -11,14 +11,20 @@ import {
 import { defaultFetch } from "../../../../service/api/defaultFetch";
 import { useIsRoomStore } from "../../../../store/roomStore";
 import { useLoginStore } from "../../../../store/store";
-import { roomUserListData } from "../../../../types/Room";
+import {
+  playerData,
+  roomPlayListData,
+  roomUserListData,
+} from "../../../../types/Room";
 
 export default function Chat({
   roomInfo,
   setUserList,
+  setPlayList,
 }: {
   roomInfo: string;
   setUserList: Dispatch<SetStateAction<roomUserListData | undefined>>;
+  setPlayList: Dispatch<SetStateAction<playerData | undefined>>;
 }) {
   const params = useParams();
   const router = useRouter();
@@ -35,9 +41,13 @@ export default function Chat({
   >([]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) {
+      return;
+    }
     if (e.key === "Enter") {
       if (inputRef.current) {
         sendMessage(`/app/room/${params.id}`, inputRef.current.value);
+        console.log(inputRef.current.value);
         inputRef.current.value = "";
       }
     }
@@ -51,6 +61,17 @@ export default function Chat({
       }
     );
     setUserList(response);
+  };
+
+  const fetchPlayerList = async () => {
+    const response = await defaultFetch<playerData>(
+      `/room/${params.id}/game/players`,
+      {
+        method: "GET",
+      }
+    );
+    console.log(response);
+    setPlayList(response);
   };
 
   /*
@@ -89,17 +110,15 @@ export default function Chat({
 
       if (msg.event) {
         fetchUserList();
+        fetchPlayerList();
       }
     };
     subscribeToTopic(`/topic/room/${params.id}`, handleNewMessage);
     fetchUserList();
+    fetchPlayerList();
 
     return () => {
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
-      } else {
-        unsubscribeFromTopic(`/topic/room/${params.id}`);
-      }
+      unsubscribeFromTopic(`/topic/room/${params.id}`);
     };
   }, []);
 

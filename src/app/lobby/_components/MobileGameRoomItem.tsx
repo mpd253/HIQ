@@ -6,11 +6,11 @@ interface MobileGameRoomItemProps {
   roomName: string;
   round: number;
   disclosure: boolean;
-  gameType: "SPEED" | "CATCHMIND" | "OX";
+  gameType: "SPEED" | "OX";
   time?: number;
   maxUsers?: number;
-  currentUsers?: number;
-  gameRunning?: boolean; // gameRunning 속성 추가
+  currentPlayer?: number;
+  gameRunning?: boolean;
 }
 
 export default function MobileGameRoomItem({
@@ -19,17 +19,20 @@ export default function MobileGameRoomItem({
   round,
   disclosure,
   gameType,
-  time = 60, // 기본값 설정
-  maxUsers = 8, // 기본값 설정
-  currentUsers = 1, // 기본값 설정
-  gameRunning = false, // 기본값 설정
+  time = 60,
+  maxUsers = 8,
+  currentPlayer = 1,
+  gameRunning = false,
 }: MobileGameRoomItemProps) {
-  // 게임 타입에 맞는 한글 이름으로 변환
   const gameTypeToKorean = {
     SPEED: "스피드 퀴즈",
-    CATCHMIND: "그림 맞추기",
     OX: "OX 퀴즈",
   };
+
+  const isFull =
+    currentPlayer !== undefined &&
+    maxUsers !== undefined &&
+    currentPlayer >= maxUsers;
 
   return (
     <div
@@ -75,7 +78,7 @@ export default function MobileGameRoomItem({
         진행시간 {time}초
       </div>
       <div className="absolute right-[8px] top-[5px] text-sm">
-        {currentUsers} / {maxUsers}
+        {currentPlayer} / {maxUsers}
       </div>
       <div className="absolute right-[5px] rounded-[5px] bottom-[27px] bg-[#D9D9D9] w-[80px] h-[15px] text-xs flex justify-center items-center">
         상식

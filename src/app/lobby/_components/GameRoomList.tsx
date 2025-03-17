@@ -24,10 +24,10 @@ interface Room {
   round: number;
   hostId: number;
   disclosure: boolean;
-  gameType: "SPEED" | "CATCHMIND" | "OX";
+  gameType: "SPEED" | "OX";
   time?: number; // 시간 제한
   maxUsers?: number; // 최대 인원수
-  currentUsers?: number; // 현재 인원수
+  currentPlayer?: number; // 현재 인원수
   gameRunning?: boolean; // 게임 진행 중 여부
 }
 
@@ -59,13 +59,12 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 비밀번호 모달 상태 추가
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const router = useRouter(); // 라우터 추가
+  const router = useRouter();
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
   // 게임 모드와 검색 타입 배열
-  const gameModes = ["전체", "그림 맞추기", "스피드 퀴즈", "OX 퀴즈"];
+  const gameModes = ["전체", "스피드 퀴즈", "OX 퀴즈"];
   const searchTypes = ["방 제목", "방 번호"];
 
   // 드롭다운과 필터 드롭다운을 위한 ref
@@ -73,7 +72,6 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
   const filterDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // roomsData 체크 로직 제거
     setLoading(true);
 
     // 소켓 연결 초기화
@@ -216,7 +214,6 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
     // 게임 타입 필터링
     if (selectedMode !== "전체") {
       const modeMap: Record<string, string> = {
-        "그림 맞추기": "CATCHMIND",
         "스피드 퀴즈": "SPEED",
         "OX 퀴즈": "OX",
       };
@@ -245,6 +242,23 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
   const handleRoomClick = (room: Room, e: React.MouseEvent) => {
     e.preventDefault(); // 기본 링크 동작 방지
 
+    // 방이 꽉 찼는지 확인
+    const isFull =
+      room.currentPlayer !== undefined &&
+      room.maxUsers !== undefined &&
+      room.currentPlayer >= room.maxUsers;
+
+    // 게임 진행 중이거나 방이 가득 찬 경우 접근 불가
+    if (room.gameRunning || isFull) {
+      if (room.gameRunning) {
+        console.log("게임이 이미 진행 중인 방입니다.");
+      } else if (isFull) {
+        console.log("방이 가득 찼습니다.");
+      }
+      return; // 함수 종료하여 클릭 동작 차단
+    }
+
+    // 정상적인 방 접근 처리
     if (room.disclosure) {
       // 공개방은 바로 이동
       router.push(`/lobby/rooms/${room.roomId}?password=true`);
@@ -271,7 +285,6 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
         </button>
         {/* 게임 모드 드롭다운 */}
         <div className="relative" ref={dropdownRef}>
-          {/* 기존 드롭다운 코드 */}
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="h-[3.5rem] w-[9.5rem] xl:h-[4rem] xl:w-[10rem] border border-black text-white text-lg xl:text-xl rounded-xl cursor-pointer transition-all inline-flex items-center drop-shadow-custom overflow-hidden group"
@@ -279,7 +292,6 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
             <div className="flex-1 h-full flex items-center justify-center bg-[var(--color-second)] group-hover:bg-[var(--color-second-hover)] transition-all">
               <span
                 className={`${
-                  selectedMode === "그림 맞추기" ||
                   selectedMode === "스피드 퀴즈"
                     ? "text-md xl:text-lg"
                     : "text-lg xl:text-xl"
@@ -408,7 +420,7 @@ export default function GameRoomList({ roomsData }: GameRoomListProps) {
                   gameType={room.gameType}
                   time={room.time}
                   maxUsers={room.maxUsers}
-                  currentUsers={room.currentUsers}
+                  currentPlayer={room.currentPlayer}
                   gameRunning={room.gameRunning}
                 />
               </div>

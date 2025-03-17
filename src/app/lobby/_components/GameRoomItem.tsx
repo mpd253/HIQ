@@ -5,10 +5,10 @@ interface GameRoomItemProps {
   roomName: string;
   round: number;
   disclosure: boolean;
-  gameType: "SPEED" | "CATCHMIND" | "OX";
+  gameType: "SPEED" | "OX";
   time?: number;
   maxUsers?: number;
-  currentUsers?: number;
+  currentPlayer?: number;
   gameRunning?: boolean;
 }
 
@@ -18,15 +18,13 @@ export default function GameRoomItem({
   round,
   disclosure,
   gameType,
-  time = 60, // 기본값 설정
-  maxUsers = 8, // 기본값 설정
-  currentUsers = 1, // 기본값 설정
-  gameRunning = false, // 기본값 설정
+  time = 60,
+  maxUsers = 8,
+  currentPlayer = 1,
+  gameRunning = false,
 }: GameRoomItemProps) {
-  // 게임 타입에 맞는 한글 이름으로 변환
   const gameTypeToKorean = {
     SPEED: "스피드 퀴즈",
-    CATCHMIND: "그림 맞추기",
     OX: "OX 퀴즈",
   };
 
@@ -91,7 +89,7 @@ export default function GameRoomItem({
 
       {/* 참가자 수 */}
       <div className="absolute left-[22%] bottom-[8%] text-[1.4em]">
-        {currentUsers} / {maxUsers}
+        {currentPlayer} / {maxUsers}
       </div>
 
       {/* 카테고리 태그 */}
